@@ -45,3 +45,48 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-5J5SV9X6');</script>
 <!-- End Google Tag Manager -->
 
+<script async src="https://www.googletagmanager.com/gtag/js?id=TAG_ID"></script>
+
+<script type="text/javascript">
+    document.addEventListener(adobe.target.event.REQUEST_SUCCEEDED, function(e) {
+        var tokens = e.detail.responseTokens;
+
+        if (isEmpty(tokens)) {
+            return;
+        }
+
+        var activityNames = [];
+        var experienceNames = [];
+        var uniqueTokens = distinct(tokens);
+
+        uniqueTokens.forEach(function(token) {
+            activityNames.push(token["activity.name"]);
+            experienceNames.push(token["experience.name"]);
+        });
+
+        gtag('config', 'TAG_ID');
+        gtag('event', 'action_name', {'eventCategory': 'target',
+            'eventAction': experienceNames, 'eventLabel': activityNames
+        });
+    });
+
+    function isEmpty(val) {
+        return (val === undefined || val == null || val.length <= 0) ? true : false;
+    }
+
+    function key(obj) {
+        return Object.keys(obj)
+        .map(function(k) { return k + "" + obj[k]; })
+        .join("");
+    }
+
+    function distinct(arr) {
+        var result = arr.reduce(function(acc, e) {
+            acc[key(e)] = e;
+            return acc;
+        }, {});
+
+        return Object.keys(result)
+        .map(function(k) { return result[k]; });
+    }
+</script>
